@@ -27,7 +27,7 @@ const CONFIG_PATH = path.resolve(__dirname, '../config.json');
 
 
 export type Config = {
-    cache: 'datastore' | 'memory' | 'filesystem' | null;
+    cache: string | null;
     cacheConfig: { [key: string]: string };
     timeout: number;
     port: string;
@@ -40,19 +40,28 @@ export type Config = {
 
 export class ConfigManager {
     public static config: Config = {
-        cache: null,
+        cache: process.env.RENDERTRON_CACHE || null,
         cacheConfig: {
-            snapshotDir: path.join(os.tmpdir(), 'rendertron'),
-            cacheDurationMinutes: (60 * 24).toString(),
-            cacheMaxEntries: '100'
+            snapshotDir: process.env.RENDERTRON_CACHE_DIR || path.join(os.tmpdir(), 'rendertron'),
+            cacheDurationMinutes: process.env.RENDERTRON_CACHE_DURATION || (60 * 24).toString(),
+            cacheMaxEntries: process.env.RENDERTRON_CACHE_ENTRIES || '100'
         },
-        timeout: 10000,
-        port: '3000',
-        host: '0.0.0.0',
-        width: 1000,
-        height: 1000,
-        headers: {},
-        puppeteerArgs: ['--no-sandbox']
+        timeout: Number(process.env.RENDERTRON_TIMEOUT || 10000),
+        port: process.env.RENDERTRON_PORT || '3000',
+        host: process.env.RENDERTRON_HOST || '0.0.0.0',
+        width: Number(process.env.RENDERTRON_WIDTH || 1000),
+        height: Number(process.env.RENDERTRON_HEIGHT || 1000),
+        headers: JSON.parse(process.env.RENDERTRON_HEADERS || '{}'),
+        puppeteerArgs: JSON.parse(process.env.RENDERTRON_ARGS || `[
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+          "--disable-setuid-sandbox",
+          "--ignore-certificate-errors",
+          "--no-first-run",
+          "--no-sandbox",
+          "--no-zygote",
+          "--single-process"
+        ]`)
     };
 
     static async getConfiguration(): Promise<Config> {
