@@ -47,7 +47,7 @@ export class ConfigManager {
             cacheMaxEntries: process.env.RENDERTRON_CACHE_ENTRIES || '100'
         },
         timeout: Number(process.env.RENDERTRON_TIMEOUT || 10000),
-        port: process.env.RENDERTRON_PORT || '3000',
+        port: process.env.RENDERTRON_PORT || '3030',
         host: process.env.RENDERTRON_HOST || '0.0.0.0',
         width: Number(process.env.RENDERTRON_WIDTH || 1000),
         height: Number(process.env.RENDERTRON_HEIGHT || 1000),
